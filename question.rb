@@ -1,5 +1,6 @@
 require 'sqlite3'
 
+require_relative "modelbase"
 require_relative "questions_db"
 require_relative "user"
 require_relative "question_like"
@@ -8,26 +9,9 @@ require_relative "reply"
 
 
 
-class Question
+class Question < ModelBase
     attr_accessor :id, :title, :body, :user_id
 
-    def self.all
-        data = QuestionsDatabase.instance.execute('SELECT * FROM questions')
-        data.map { |datum| Question.new(datum) }
-    end
-    
-    def self.find_by_id(id)
-        question = QuestionsDatabase.instance.execute(<<-SQL, id)
-            SELECT
-              *
-            FROM
-              questions
-            WHERE
-              id = ?
-        SQL
-        return nil unless question.length > 0
-        Question.new(question.first)
-    end
 
     #our table has author_id as user_id
     def self.find_by_author_id(author_id)

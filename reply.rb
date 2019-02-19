@@ -6,26 +6,8 @@ require_relative "question"
 require_relative "question_follow"
 require_relative "question_like"
 
-class Reply
+class Reply < ModelBase
     attr_accessor :id, :parent_id, :body, :subject_question_id, :author_id
-
-    def self.all
-        data = QuestionsDatabase.instance.execute('SELECT * FROM replies')
-        data.map { |datum| Reply.new(datum) }
-    end
-
-    def self.find_by_id(id)
-        reply = QuestionsDatabase.instance.execute(<<-SQL, id)
-            SELECT
-              *
-            FROM
-              replies
-            WHERE
-              id = ?
-        SQL
-        return nil unless reply.length > 0
-        Reply.new(reply.first)
-    end
 
     #our table has user_id as author_id
     def self.find_by_user_id(user_id)
